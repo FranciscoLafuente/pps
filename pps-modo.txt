@@ -1,0 +1,7 @@
+#!/bin/sh
+u=pps-laboratorio
+case "$1" in
+  laboratorio) systemctl enable --now $u ;;
+  mantenimiento) systemctl disable --now $u ;;
+esac
+if systemctl is-active --quiet $u; then echo "Modo actual: LABORATORIO"; else echo "Modo actual: MANTENIMIENTO"; fi

@@ -1,0 +1,17 @@
+table inet pps_lab
+delete table inet pps_lab
+table inet pps_lab {
+  chain salida {
+    type filter hook output priority -10; policy accept;
+    oifname "lo" accept
+    udp sport 68 udp dport 67 accept
+    oifname "docker0" accept
+    oifname "br-*" accept
+    ct state new drop
+  }
+  chain reenvio {
+    type filter hook forward priority -10; policy accept;
+    iifname { "docker0", "br-*" } oifname { "docker0", "br-*" } accept
+    iifname { "docker0", "br-*" } ct state new drop
+  }
+}

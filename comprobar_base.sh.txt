@@ -1,0 +1,21 @@
+#!/bin/bash
+ok=0; fallo=0
+c() { d="$1"; shift; if "$@" >/dev/null 2>&1; then echo "[ OK  ] $d"; ok=$((ok+1)); else echo "[FALLO] $d"; fallo=$((fallo+1)); fi; }
+mem() { awk -v m="${MEM_MIN_KB:-3670016}" '$1=="MemTotal:" {exit ($2>=m?0:1)}' /proc/meminfo; }
+ip4() { ip -4 -o addr show scope global | grep -Ev ' (docker0|br-[0-9a-f]+) ' | grep -q .; }
+jdk() { javac -version 2>&1 | grep -q '^javac 21'; }
+c "Ubuntu 26.04" grep -q '^VERSION_ID="26.04"' /etc/os-release
+c "Nombre pps-core" test "$(hostname)" = pps-core
+c "Memoria suficiente" mem
+c "Direccion IPv4" ip4
+c "machine-id generado" test -s /etc/machine-id
+c "JDK 21" jdk
+c "strings" command -v strings
+c "unzip" command -v unzip
+c "firefox" command -v firefox
+c "Docker activo" systemctl is-active --quiet docker
+c "Docker sin sudo" docker info
+c "pps-modo" command -v pps-modo
+if systemctl is-active --quiet pps-laboratorio; then echo "Modo LABORATORIO"; else echo "Modo MANTENIMIENTO"; fi
+echo "Resultado: $ok correctas, $fallo con fallo."
+[ "$fallo" -eq 0 ]

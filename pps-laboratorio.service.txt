@@ -1,0 +1,13 @@
+[Unit]
+Description=PPS modo laboratorio
+DefaultDependencies=no
+Before=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/pps/laboratorio.nft
+ExecStop=-/usr/sbin/nft delete table inet pps_lab
+
+[Install]
+WantedBy=sysinit.target
