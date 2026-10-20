@@ -1,0 +1,81 @@
+DEMOSTRACIONES DE LA VIDEOCONFERENCIA 1.3 (Java y ejecucion real)
+Modulo 5023 PPS. Tallerbit y las demas empresas son ficticias.
+
+REQUISITOS: JDK 21 (javac, javap, jar, jcmd), strings (paquete binutils) y unzip.
+Los scripts .sh necesitan Linux (por ejemplo tu escritorio pps-core), WSL o Git Bash.
+No hace falta Internet y ninguna demo se dirige a otros sistemas.
+
+ANTES DE LA CLASE (2 minutos)
+    ./ensayo.sh              ensaya todo en una copia temporal; debe acabar sin FALLO
+    ./ensayo.sh --completo   ademas, compara Java y Python (JIT, opcional)
+    ./limpiar.sh             borra .class y .jar de tus carpetas tras ensayar en ellas
+
+ESTRUCTURA (una carpeta por demostracion; Pedido y Acceso tienen dos versiones con
+el mismo nombre de clase, por eso van separadas)
+    niv/         Nivelacion.java                      Demo 1
+    pedido-v1/   Pedido.java ProbarPedido.java        Demo 2 (version con fallo)
+    pedido-v2/   Pedido.java ProbarPedido.java        Demo 2 (version corregida)
+    acceso-v1/   Acceso.java comprobar_secretos.sh    Demo 3 (clave en el codigo)
+    acceso-v2/   Acceso.java comprobar_secretos.sh    Demo 3 (clave en el entorno)
+    cupon/       CuponInseguro CuponSeguro ProbarCupon    Lectura guiada
+    mem/ espera/ inv/ jit/                            Apoyo: no se tocan en directo
+
+DEMO 1 - Del .java a la JVM (minutos 8-18)
+    cd niv
+    javac Nivelacion.java
+    ls                                  # aparece Nivelacion.class
+    od -An -tx1 -N8 Nivelacion.class    # ca fe ba be 00 00 00 41  (0x41 = 65 = JDK 21)
+    javap -c Nivelacion                 # bytecode de cuadrado (imul)
+    java Nivelacion
+  Pregunta: por que este mismo .class corre en otro sistema sin recompilar?
+
+DEMO 2 - Un error silencioso y su ciclo (minutos 18-28)
+    cd pedido-v1
+    javac Pedido.java ProbarPedido.java
+    java Pedido                         # 3000000 x 1000 = -1294967296
+    java ProbarPedido; echo $?          # cuatro lineas FALLO y codigo 1
+    cd ../pedido-v2
+    javac Pedido.java ProbarPedido.java
+    java Pedido                         # Rechazado: Unidades fuera de rango: 3000000
+    java ProbarPedido; echo $?          # TODO OK y codigo 0
+  Hallazgo: importe negativo. Causa raiz: desbordamiento de int (CWE-190, de memoria:
+  verifica el numero). Correccion: limite de entrada + Math.multiplyExact.
+  Verificacion: ProbarPedido. Pipeline: la prueba se ejecutaria en cada cambio (RA5).
+
+DEMO 3 - El secreto en el bytecode (minutos 28-38)
+    cd acceso-v1
+    javac Acceso.java
+    jar cf acceso.jar Acceso.class
+    java Acceso LabClave-2026           # Acceso concedido
+    strings Acceso.class                # aparece LabClave-2026
+    javap -v Acceso                     # esta en la tabla de constantes
+    unzip -p acceso.jar Acceso.class | strings
+    sh comprobar_secretos.sh LabClave Acceso.class; echo $?     # FALLO, codigo 1
+    cd ../acceso-v2
+    javac Acceso.java
+    export CLAVE_LAB=ejemplo-no-secreto
+    java Acceso ejemplo-no-secreto      # Acceso concedido
+    sh comprobar_secretos.sh LabClave Acceso.class; echo $?     # OK, codigo 0
+    unset CLAVE_LAB
+  Limites: la clave que estuvo publicada hay que cambiarla; el entorno no es una caja
+  fuerte; la gestion de secretos se amplia en RA5. No uses una clave real en directo.
+
+LECTURA GUIADA - Cupones (minutos 38-46)
+    cd cupon
+    javac CuponInseguro.java CuponSeguro.java ProbarCupon.java
+    java ProbarCupon inseguro; echo $?  # misma semilla, mismo cupon, codigo 1
+    java ProbarCupon seguro; echo $?    # cupones distintos, codigo 0
+  No escribas ni ejecutes en clase ningun programa que prediga cupones.
+
+APOYO (solo si surge la duda; no forman parte del guion)
+    cd mem && javac Memoria.java && java -Xmx16m Memoria
+    cd espera && javac Espera.java && java Espera &     # luego: jcmd <PID> VM.version ; kill <PID>
+    cd inv && javac Inventario.java && java Inventario
+    cd jit && javac Caliente.java && java Caliente && python3 calien.py
+
+NOTAS
+ - Las fuentes reproducen los programas del documento «RA1 · 1.3 · Java y ejecucion real».
+   Caliente.java y calien.py no estan en ese documento: son el apoyo de la demo 1 (JIT).
+ - Se han ensayado con OpenJDK 21.0.12.1 en un entorno de pruebas Ubuntu 24.04,
+   NO en tu maquina ni en pps-core. Ensayalos tu antes de la clase.
+ - Los tiempos de cada demo son estimaciones, no cronometros.
