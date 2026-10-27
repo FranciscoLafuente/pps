@@ -1,0 +1,35 @@
+# 1) Abre la salida a Internet: en modo laboratorio está bloqueada y pip/curl no podrían descargar nada.
+pps-modo mantenimiento
+
+# 2) Crea el entorno virtual en /opt/pps/venv (necesita sudo porque /opt es del sistema).
+sudo mkdir -p /opt/pps
+sudo python3 -m venv /opt/pps/venv
+
+# 3) Instala DENTRO del entorno: pytest (pruebas), coverage (cobertura) y hypothesis (pruebas de propiedades, ampliación).
+sudo /opt/pps/venv/bin/pip install pytest coverage hypothesis
+
+# 4) Crea la carpeta donde guardar el jar de JUnit.
+sudo mkdir -p /opt/pps/lib
+
+# 5) Averigua la última versión publicada del Console Launcher leyendo el fichero de metadatos de Maven Central.
+#    curl: -f falla si el servidor da error, -s no muestra progreso, -S sí muestra errores, -L sigue redirecciones.
+#    grep/sed: extraen el texto de la etiqueta <release>.
+VERSION=$(curl -fsSL https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/maven-metadata.xml | grep -o '<release>[^<]*' | sed 's/<release>//')
+echo "Versión elegida: $VERSION"        # no debe salir vacío; anota este número
+
+# 6) Construye la URL del jar de esa versión y descárgalo con un nombre fijo, sin número de versión.
+URL=https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/$VERSION/junit-platform-console-standalone-$VERSION.jar
+sudo curl -fsSL -o /opt/pps/lib/junit-platform-console-standalone.jar "$URL"
+
+# 7) Comprueba la integridad: Maven publica junto al jar su huella SHA-1; sha1sum -c compara y debe decir "OK".
+echo "$(curl -fsSL "$URL.sha1" | cut -d' ' -f1)  /opt/pps/lib/junit-platform-console-standalone.jar" | sha1sum -c -
+
+# 8) Haz que el entorno esté en el PATH de las sesiones nuevas (tee con sudo, porque con ">" la redirección no tendría permisos).
+echo 'export PATH=/opt/pps/venv/bin:$PATH' | sudo tee /etc/profile.d/pps-pruebas.sh
+
+# 9) Cierra la salida a Internet.
+pps-modo laboratorio
+
+# 10) Anota las versiones instaladas (para la tabla de la sección 13 de la teoría) y comprueba que el jar existe.
+/opt/pps/venv/bin/pip list | grep -Ei '^(pytest|coverage|hypothesis) '
+ls -l /opt/pps/lib/
