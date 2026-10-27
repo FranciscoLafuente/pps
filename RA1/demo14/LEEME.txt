@@ -1,0 +1,37 @@
+DEMOSTRACIONES DE LA VIDEOCONFERENCIA 1.4 (Pruebas de software)
+Modulo 5023 PPS. Tallerbit y las demas empresas y personas son ficticias.
+
+REQUISITOS
+    Python 3 con pytest (version recordada: 8.x; comprueba la tuya con "python3 -m pytest --version").
+    JDK 25 (o 21) y, solo para la parte Java, el fichero junit-platform-console-standalone-X.jar
+    (JUnit 5 / Jupiter; descargalo con "pps-modo mantenimiento" y vuelve a "pps-modo laboratorio").
+Nada de esto se dirige a otros sistemas: todo se ejecuta en local.
+
+ESTADO DE VERIFICACION
+    La logica de las pruebas se comprobo en el entorno de elaboracion con un sustituto minimo de pytest
+    y de JUnit, porque ese entorno no tenia acceso a PyPI ni a Maven Central. NO se ha ejecutado con pytest
+    ni con JUnit reales. Por eso el primer paso es el ensayo en tu maquina:
+
+ANTES DE LA CLASE
+    bash ensayo.sh        ensaya todo en una copia temporal (sin sudo). Debe acabar con 0 con fallo.
+    bash limpiar.sh       borra __pycache__, .pytest_cache y ficheros de Java generados.
+
+ESTRUCTURA (cada par v1/v2 usa el mismo nombre de modulo, por eso van en carpetas separadas)
+    descuentos-v1/  descuentos-v2/   valores limite (v1: tres bordes mal puestos)       Demo A
+    adjuntos-v1/    adjuntos-v2/     recorrido de rutas, CWE-22 (v1 sin comprobar)      Demo B
+    repo-v1/        repo-v2/         consulta SQL concatenada, CWE-89 (v1 vulnerable)   Demo C
+    cobertura/                       test_flojo.py, test_bueno.py, mutar.py             Demo D
+    pedido-v1/      pedido-v2/       Pedido.java + PedidoTest.java (JUnit 5), de 1.3    Demo E
+
+COMANDOS EN CLASE (en el orden del guion)
+    cd descuentos-v1 && python3 -m pytest -q          # 3 fallos: 10, 50 y 100
+    cd ../descuentos-v2 && python3 -m pytest -q        # todo pasa
+    cd ../adjuntos-v1 && python3 -m pytest -q          # fallan las pruebas de abuso
+    cd ../adjuntos-v2 && python3 -m pytest -q          # todo pasa
+    cd ../repo-v1 && python3 -m pytest -q ; cd ../repo-v2 && python3 -m pytest -q
+    cd ../cobertura && python3 -m pytest -q            # pasan las dos
+    python3 mutar.py                                    # el flojo deja vivos 4 mutantes; el bueno, 0
+    # con cobertura (si has instalado coverage):  python3 -m coverage run -m pytest -q test_flojo.py ; python3 -m coverage report -m
+    # Java (ajusta el nombre del jar):
+    JAR=$(ls ~/junit-platform-console-standalone*.jar)
+    cd ../pedido-v1 && mkdir -p out && javac -cp "$JAR" -d out *.java && java -jar "$JAR" execute --class-path out --scan-class-path
