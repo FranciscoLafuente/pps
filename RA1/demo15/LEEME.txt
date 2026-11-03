@@ -1,0 +1,36 @@
+DEMO 1.5 · Seguridad en lenguajes y sandboxes (material del PROFESOR; no repartir: contiene las versiones corregidas)
+=====================================================================================================================
+
+Contenido
+  memoria-c/       copiar_v1.c (vulnerable), copiar_v2.c (corregida), probar.sh (compila con AddressSanitizer y ejecuta)
+  memoria-java/    Limites.java (limites, nulos, conversion, enteros)
+  frontera/        Frontera.java (intento de instalar un SecurityManager)
+  calculadora/     v1 (eval), v1b (eval con builtins vacios), v2 (ast), cada una con test_calculadora.py
+  aislamiento/     namespaces.sh, contenedor_v1.sh, contenedor_v2.sh, verificar_contenedor.sh, test_contenedor.py (las mismas comprobaciones como pruebas de pytest)
+  ensayo.sh        comprueba todo de una vez
+
+Antes de la clase (10 minutos)
+  1. Descomprime en tu carpeta personal:   unzip demo15.zip -d ~      (el zip ya contiene la carpeta demo15 y queda en ~/demo15)
+  2. Activa el entorno virtual con pytest (en CADA terminal nueva):   source ~/venv-pruebas/bin/activate
+  3. Ensayo completo:   cd ~/demo15 && bash ensayo.sh
+     Lo que falte se avisa con [AVISO]. Instalar en modo mantenimiento (pps-modo mantenimiento ... pps-modo laboratorio):
+       - gcc:     sudo apt install -y build-essential
+       - imagen:  docker pull alpine:3.20
+  4. Anota los recuentos reales de pytest que imprime el ensayo y comparalos con la guia docente.
+
+Durante la clase (todos los comandos desde ~/demo15)
+  C con AddressSanitizer :  bash memoria-c/probar.sh
+  Java                   :  mkdir -p /tmp/o && javac -d /tmp/o memoria-java/Limites.java frontera/Frontera.java
+                            java -cp /tmp/o Limites ;  java -cp /tmp/o Frontera
+                            (opcional) java -Djava.security.manager=allow -cp /tmp/o Frontera     <- solo en JDK que lo permitan
+  Calculadora (con el venv activo):  cd calculadora/v1 && python3 -m pytest -q     (idem v1b y v2)
+  Namespaces             :  bash aislamiento/namespaces.sh
+  Contenedores           :  bash aislamiento/contenedor_v1.sh ;  bash aislamiento/contenedor_v2.sh
+  Contenedores con pytest:  CONSERVAR=1 bash aislamiento/contenedor_v1.sh      # deja el contenedor creado
+                            CONTENEDOR=tallerbit-v1 python3 -m pytest -q aislamiento/test_contenedor.py
+                            docker rm -f tallerbit-v1                          # limpieza (idem con v2)
+
+Estado de la verificacion (preparacion, en un entorno distinto del de clase)
+  - Ejecutado: probar.sh (gcc 13.3), Limites y Frontera (JDK 21), namespaces.sh, calculadora con un SUSTITUTO de pytest.
+  - NO ejecutado con herramientas reales: pytest, JDK 25, Docker (solo estaba el cliente), Ubuntu 26.04.
+  - La logica de verificar_contenedor.sh se probo con un docker simulado.
