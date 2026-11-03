@@ -36,13 +36,13 @@ fi
 
 echo "== B. Python: calculadora (eval)"
 if [ -z "$PYTEST" ]; then
-    for candidato in "${VIRTUAL_ENV:+$VIRTUAL_ENV/bin/python}" python3 /opt/pps/venv/bin/python "$HOME/venv-pruebas/bin/python"; do
+    for candidato in "${VIRTUAL_ENV:+$VIRTUAL_ENV/bin/python}" /opt/pps/venv/bin/python python3 "$HOME/venv-pruebas/bin/python"; do
         [ -n "$candidato" ] || continue
         if "$candidato" -m pytest --version >/dev/null 2>&1; then PYTEST="$candidato -m pytest"; break; fi
     done
 fi
 if [ -z "$PYTEST" ]; then
-    echo "[AVISO] No encuentro pytest. Activa tu entorno virtual (source ~/venv-pruebas/bin/activate) y repite."
+    echo "[AVISO] No encuentro pytest. Activa tu entorno virtual (source /opt/pps/venv/bin/activate) y repite."
 else
     echo "Usando: $($PYTEST --version 2>&1 | head -n1)"
     ( cd calculadora/v1  && $PYTEST -q >/dev/null 2>&1 ); r1=$?

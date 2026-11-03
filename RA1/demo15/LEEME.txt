@@ -11,7 +11,7 @@ Contenido
 
 Antes de la clase (10 minutos)
   1. Descomprime en tu carpeta personal:   unzip demo15.zip -d ~      (el zip ya contiene la carpeta demo15 y queda en ~/demo15)
-  2. Activa el entorno virtual con pytest (en CADA terminal nueva):   source ~/venv-pruebas/bin/activate
+  2. Activa el entorno virtual con pytest de la plantilla (en CADA terminal nueva):   source /opt/pps/venv/bin/activate
   3. Ensayo completo:   cd ~/demo15 && bash ensayo.sh
      Lo que falte se avisa con [AVISO]. Instalar en modo mantenimiento (pps-modo mantenimiento ... pps-modo laboratorio):
        - gcc:     sudo apt install -y build-essential

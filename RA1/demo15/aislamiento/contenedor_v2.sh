@@ -22,5 +22,6 @@ docker exec "$NOMBRE" sh -c 'echo "usuario:           $(id -un 2>/dev/null || id
   echo "capacidades:       $(grep CapEff /proc/self/status)";
   echo "interfaces de red: $(ls /sys/class/net | tr "\n" " ")"'
 echo
-"$(dirname "$0")/verificar_contenedor.sh" "$NOMBRE"
+"$(dirname "$0")/verificar_contenedor.sh" "$NOMBRE"; RESULTADO=$?   # guarda el resultado del verificador (0 = cumple, 1 = no cumple)
 [ "${CONSERVAR:-0}" = 1 ] || docker rm -f "$NOMBRE" >/dev/null   # con CONSERVAR=1 el contenedor se deja para las pruebas de pytest
+exit "$RESULTADO"                                             # el script devuelve el resultado del verificador, no el de docker rm
