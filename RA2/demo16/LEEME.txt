@@ -1,0 +1,26 @@
+DEMO 2.1 · Fuentes abiertas y listas de riesgos (material del PROFESOR; no repartir: contiene las versiones corregidas)
+=====================================================================================================================
+
+Aplicacion ficticia: "Citas Tallerbit" (base SQLite en memoria con datos inventados; no hace falta Internet ni instalar nada).
+
+Contenido
+  inyeccion/     citas_v1.py (vulnerable, CWE-89 · A05), citas_v2.py (parametrizada), test_citas.py, demo_citas.py, bd.py
+  acceso/        fichas_v1.py (vulnerable, CWE-639 · A01), fichas_v2.py (comprueba propietario), test_fichas.py, bd.py
+  excepciones/   permisos_v1.py (falla abierto, CWE-636 · A10), permisos_v2.py (falla cerrado), test_permisos.py
+  ensayo.sh      comprueba todo de una vez
+
+Antes de la clase (5 minutos)
+  1. Descomprime en tu carpeta personal:   unzip demo16.zip -d ~      (queda en ~/demo16)
+  2. Activa el entorno virtual con pytest (en CADA terminal nueva):   source /opt/pps/venv/bin/activate
+  3. Ensayo completo:   cd ~/demo16 && bash ensayo.sh
+  4. Anota los recuentos reales de pytest que imprime y comparalos con los que espera la guia docente.
+
+Durante la clase (todos los comandos desde ~/demo16)
+  Demo A  inyeccion :  cd ~/demo16/inyeccion
+                       python3 demo_citas.py                 # muestra v1 y v2 con tres entradas, sin pytest
+                       VERSION=v1 python3 -m pytest -q       # la prueba de regresion FALLA con el codigo vulnerable
+                       VERSION=v2 python3 -m pytest -q       # PASA con el codigo corregido
+  Demo B  acceso    :  cd ~/demo16/acceso        y los mismos dos comandos de pytest
+  Demo C  excepciones: cd ~/demo16/excepciones   y los mismos dos comandos de pytest (opcional)
+  Para ver el codigo:  cat citas_v1.py   y   diff citas_v1.py citas_v2.py
+
