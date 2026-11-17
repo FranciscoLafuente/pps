@@ -1,0 +1,17 @@
+requisito;nivel;en_palabras_propias;riesgo;como_se_verifica;evidencia;estado
+v5.0.0-8.1.1;L1;Documento con las reglas de quién ve qué;R1;Lectura de la documentación;(pendiente);Pendiente
+v5.0.0-8.2.1;L1;Cada función solo para quien tiene permiso;R1;Prueba automatizada por rol;(pendiente);Pendiente
+v5.0.0-8.2.2;L1;Cada cita solo para su propietario;R1;Prueba automatizada por usuario y registro;test_v5_0_0_8_2_2_otro_usuario_no_ve_la_cita_ajena;Cumple
+v5.0.0-8.3.1;L1;La autorización se aplica en el servidor;R1;Revisión de código y prueba contra la API;(pendiente);Pendiente
+v5.0.0-1.2.4;L1;Las consultas usan parámetros;R2;Prueba con entradas problemáticas y revisión;test_v5_0_0_1_2_4_*;Cumple
+v5.0.0-2.2.1;L1;La entrada se valida contra lo que se espera;R2;Prueba de entradas fuera de formato;(pendiente);Pendiente
+v5.0.0-11.4.2;L2;Contraseñas con función de derivación costosa;R3;Revisión de código y prueba de que no se guarda el texto;(pendiente);Pendiente
+v5.0.0-6.1.1;L1;Documento que explica cómo se frenan los intentos de acceso;R4;Lectura de la documentación;(pendiente);Pendiente
+v5.0.0-6.3.1;L1;Controles contra fuerza bruta y credenciales filtradas;R4;Prueba que agota los intentos;(pendiente);Pendiente
+v5.0.0-15.2.1;L1;Sin componentes fuera de plazo de actualización;R5;Análisis de dependencias en el pipeline (RA5);(pendiente);Pendiente
+v5.0.0-13.4.2;L2;Depuración desactivada en producción;R6;Comprobación automática de la configuración;(pendiente);Pendiente
+v5.0.0-16.5.2;L2;Si cae un servicio externo la aplicación sigue segura;R7;Prueba con el servicio simulado caído;test_v5_0_0_16_5_2_*;Cumple
+v5.0.0-16.5.3;L2;Ante una excepción falla de forma controlada;R7;Prueba que provoca la excepción;(pendiente);Pendiente
+v5.0.0-16.3.1;L2;Se registran los accesos con éxito y sin él;R9;Prueba que provoca el evento y lo busca en el registro;(pendiente);Pendiente
+v5.0.0-12.1.1;L1;Solo TLS 1.2 y 1.3;-;Comprobación de la configuración del servidor (Bastionado);(pendiente);Pendiente
+v5.0.0-15.3.1;L1;La API devuelve solo los campos necesarios;R1;Prueba de la forma de la respuesta;(pendiente);Pendiente

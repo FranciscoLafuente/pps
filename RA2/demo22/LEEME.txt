@@ -1,0 +1,35 @@
+DEMO 2.2 · De la matriz de verificación a la prueba (material del PROFESOR; no repartir: contiene las versiones corregidas)
+===========================================================================================================================
+
+Aplicación ficticia: "Citas Tallerbit" (base SQLite en memoria con datos inventados; no hace falta Internet ni instalar nada).
+Reutiliza las tres aplicaciones de la demostración de 2.1 (inyeccion, acceso, excepciones), ahora presentadas como tres REQUISITOS del ASVS 5.0.0.
+
+Contenido
+  app/           bd.py y las versiones v1 (vulnerable) y v2 (corregida) de citas, fichas y permisos
+  verificacion/  test_asvs.py: una prueba por requisito; el identificador del requisito va en el NOMBRE de la prueba
+  matriz_citas_tallerbit.csv   la matriz de verificación del caso (se abre con una hoja de cálculo; separador ";")
+  ensayo.sh      comprueba todo de una vez
+
+Antes de la clase (5 minutos)
+  1. Descomprime en tu carpeta personal:   unzip demo22.zip -d ~      (queda en ~/demo22)
+  2. Activa el entorno virtual con pytest (en CADA terminal nueva):   source /opt/pps/venv/bin/activate
+  3. Ensayo completo:   cd ~/demo22 && bash ensayo.sh
+  4. Anota el recuento real de pytest que imprime y compáralo con el que espera la guía docente.
+
+Durante la clase (todos los comandos desde ~/demo22/verificacion)
+  cd ~/demo22/verificacion
+  VERSION=v1 python3 -m pytest -v -rs     # la versión 1 incumple tres requisitos: 4 pruebas FAILED
+  VERSION=v2 python3 -m pytest -v -rs     # la versión 2 los cumple: 6 PASSED y 3 SKIPPED
+  Para ver el código:  cat ../app/fichas_v1.py   y   diff ../app/fichas_v1.py ../app/fichas_v2.py
+
+Qué significa cada resultado
+  PASSED   el requisito se ha comprobado con una prueba de código y se cumple.
+  FAILED   el requisito se ha comprobado y NO se cumple.
+  SKIPPED  el requisito no se verifica con una prueba de código (documentación, dependencias, configuración).
+           Un requisito saltado NO es un requisito cumplido: queda pendiente de verificar por otro método.
+
+Estado de la verificación (preparación, en un entorno distinto del de clase)
+  - Ejecutado: test_asvs.py con un SUSTITUTO de pytest (no es pytest real), con Python 3.13, en v1 y v2.
+    Resultado con el sustituto: v1 = 4 failed, 2 passed, 3 skipped; v2 = 6 passed, 3 skipped.
+  - NO ejecutado con herramientas reales: pytest, el Python de la VM (Ubuntu 26.04), ensayo.sh.
+  - Con pytest real el orden de las líneas de -v será el del fichero (el sustituto las ordena alfabéticamente).
