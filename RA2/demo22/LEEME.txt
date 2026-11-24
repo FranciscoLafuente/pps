@@ -27,9 +27,3 @@ Qué significa cada resultado
   FAILED   el requisito se ha comprobado y NO se cumple.
   SKIPPED  el requisito no se verifica con una prueba de código (documentación, dependencias, configuración).
            Un requisito saltado NO es un requisito cumplido: queda pendiente de verificar por otro método.
-
-Estado de la verificación (preparación, en un entorno distinto del de clase)
-  - Ejecutado: test_asvs.py con un SUSTITUTO de pytest (no es pytest real), con Python 3.13, en v1 y v2.
-    Resultado con el sustituto: v1 = 4 failed, 2 passed, 3 skipped; v2 = 6 passed, 3 skipped.
-  - NO ejecutado con herramientas reales: pytest, el Python de la VM (Ubuntu 26.04), ensayo.sh.
-  - Con pytest real el orden de las líneas de -v será el del fichero (el sustituto las ordena alfabéticamente).
